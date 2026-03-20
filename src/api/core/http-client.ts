@@ -1,6 +1,7 @@
 import type { ApiResult, ApiTuple, ApiTypeDeclaration, HttpResponse, RequestOptions } from './types'
 import { runtimeConfig } from '@/config/env'
 import { DEFAULT_ERROR_MESSAGE, HTTP_CODE } from '@/constants/http'
+import { resolveMockResponse } from '@/mock/http-mock'
 import { ROUTE_PATH } from '@/router/route-map'
 import { useAuthStore } from '@/stores/auth'
 
@@ -97,8 +98,22 @@ function shouldRetry(statusCode: number, retryCount: number) {
   return retryCount > 0 && statusCode >= 500
 }
 
+function delay(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
 function runRequest<T>(options: RequestOptions<unknown>, retryCount: number): Promise<HttpResponse<T>> {
   return new Promise<HttpResponse<T>>((resolve, reject) => {
+    if (runtimeConfig.enableMock) {
+      const mockResponse = resolveMockResponse(options)
+      if (mockResponse) {
+        delay(runtimeConfig.mockDelay).then(() => {
+          resolve(mockResponse as HttpResponse<T>)
+        })
+        return
+      }
+    }
+
     uni.request({
       url: `${runtimeConfig.baseURL}${options.url}`,
       method: options.method || 'GET',

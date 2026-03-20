@@ -1,0 +1,13 @@
+{
+  "spu_id": "string",
+  "sku_id": "string",
+  "quantity": "number",
+  "selected_attribute_items": [
+    {
+      "group_id": "string",
+      "item_id": "string"
+    }
+  ],
+  "selected_topping_ids": ["string"],
+  "remark": "string"
+}

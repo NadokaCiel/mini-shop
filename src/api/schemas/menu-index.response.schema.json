@@ -1,0 +1,24 @@
+{
+  "store_id": "string",
+  "categories": [
+    {
+      "category_id": "string",
+      "category_name": "string",
+      "sort": "number",
+      "status": "string"
+    }
+  ],
+  "default_category_id": "string",
+  "default_category_spu_list": [
+    {
+      "spu_id": "string",
+      "title": "string",
+      "sub_title": "string",
+      "base_price": "number",
+      "cover_url": "string",
+      "has_sku": "boolean",
+      "status": "string",
+      "menu_tags": ["string"]
+    }
+  ]
+}

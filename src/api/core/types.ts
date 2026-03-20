@@ -27,8 +27,8 @@ export interface ApiResult<TData> {
 export interface ApiTypeDeclaration<TRequest, TResponse> {
   name: string
   path: string
-  requestShape?: Record<string, unknown>
-  responseShape?: Record<string, unknown>
+  requestShape?: unknown
+  responseShape?: unknown
   _requestType?: TRequest
   _responseType?: TResponse
 }

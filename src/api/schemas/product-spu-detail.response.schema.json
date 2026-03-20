@@ -1,0 +1,48 @@
+{
+  "spu_id": "string",
+  "title": "string",
+  "sub_title": "string",
+  "base_price": "number",
+  "cover_url": "string",
+  "status": "string",
+  "has_sku": "boolean",
+  "sku_list": [
+    {
+      "sku_id": "string",
+      "spu_id": "string",
+      "sku_name": "string",
+      "price_delta": "number",
+      "stock_count": "number",
+      "status": "string"
+    }
+  ],
+  "attribute_groups": [
+    {
+      "group_id": "string",
+      "spu_id": "string",
+      "group_name": "string",
+      "required": "boolean",
+      "multi_select": "boolean",
+      "sort": "number",
+      "items": [
+        {
+          "item_id": "string",
+          "group_id": "string",
+          "item_name": "string",
+          "price_delta": "number",
+          "is_default": "boolean",
+          "sort": "number"
+        }
+      ]
+    }
+  ],
+  "available_toppings": [
+    {
+      "topping_id": "string",
+      "name": "string",
+      "price_delta": "number",
+      "status": "string",
+      "sort": "number"
+    }
+  ]
+}

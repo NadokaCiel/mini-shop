@@ -1,0 +1,15 @@
+{
+  "total": "number",
+  "list": [
+    {
+      "spu_id": "string",
+      "title": "string",
+      "sub_title": "string",
+      "base_price": "number",
+      "has_sku": "boolean",
+      "cover_url": "string",
+      "status": "string",
+      "menu_tags": ["string"]
+    }
+  ]
+}
