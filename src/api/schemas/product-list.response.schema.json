@@ -1,0 +1,10 @@
+{
+  "type": "array",
+  "item": {
+    "id": "string",
+    "title": "string",
+    "price": "number",
+    "cover_url": "string",
+    "stock_count": "number"
+  }
+}
