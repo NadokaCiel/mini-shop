@@ -20,7 +20,7 @@ function resolveRedirect() {
 }
 
 async function handleLogin() {
-  const [result, _typeDeclaration] = await authApi.login({
+  const result = await authApi.login({
     username: username.value,
     password: password.value,
   })

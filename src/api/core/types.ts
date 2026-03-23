@@ -24,18 +24,17 @@ export interface ApiResult<TData> {
   getData: () => TData | null
 }
 
-export interface ApiTypeDeclaration<TRequest, TResponse> {
-  name: string
+export interface ApiTypeInput<_TRequest, _TResponse> {
+  name?: string
   path: string
   requestShape?: unknown
   responseShape?: unknown
-  _requestType?: TRequest
-  _responseType?: TResponse
 }
 
-export type ApiTuple<TRequest, TResponse> = [
-  ApiResult<TResponse>,
-  ApiTypeDeclaration<TRequest, TResponse>,
-]
+export interface ApiContract<TRequest, TResponse> {
+  path: string
+  __requestType__?: TRequest
+  __responseType__?: TResponse
+}
 
 export type ApiRequestOptions<TRequest> = Omit<RequestOptions<TRequest>, 'url' | 'method'>

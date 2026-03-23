@@ -20,9 +20,7 @@ const quantity = ref(1)
 const cartTotalCount = ref(0)
 const cartTotalAmount = ref(0)
 
-const selectedSku = computed(() => {
-  return currentDetail.value?.skuList.find(item => item.skuId === selectedSkuId.value)
-})
+const selectedSku = computed(() => currentDetail.value?.skuList.find(item => item.skuId === selectedSkuId.value))
 
 const selectedAttributeDelta = computed(() => {
   if (!currentDetail.value) {
@@ -55,7 +53,7 @@ const singlePrice = computed(() => {
 const totalPrice = computed(() => singlePrice.value * quantity.value)
 
 async function loadCartSummary() {
-  const [result] = await productApi.queryCart()
+  const result = await productApi.queryCart()
   if (!result.isOk) {
     return
   }
@@ -65,7 +63,7 @@ async function loadCartSummary() {
 }
 
 async function loadCategories() {
-  const [result] = await productApi.queryCategoryList()
+  const result = await productApi.queryCategoryList()
   if (!result.isOk) {
     categories.value = [
       { categoryId: 'cat_hot', categoryName: '热销', sort: 1 },
@@ -84,7 +82,7 @@ async function loadProducts(categoryId: string) {
     return
   }
   loading.value = true
-  const [result] = await productApi.querySpuList({
+  const result = await productApi.querySpuList({
     categoryId,
     pageNum: 1,
     pageSize: 30,
@@ -122,7 +120,7 @@ function initSpecSelection(detail: productApi.QuerySpuDetailResponse) {
 
 async function openSpec(spuId: string) {
   detailLoading.value = true
-  const [result] = await productApi.querySpuDetail({ spuId })
+  const result = await productApi.querySpuDetail({ spuId })
   detailLoading.value = false
   if (!result.isOk) {
     uni.showToast({
@@ -170,7 +168,7 @@ async function addCurrentToCart() {
     groupId,
     itemId: selectedAttributes.value[groupId],
   }))
-  const [result] = await productApi.createCartItem({
+  const result = await productApi.createCartItem({
     quantity: quantity.value,
     selectedAttributeItems,
     selectedToppingIds: selectedToppingIds.value,
@@ -223,57 +221,57 @@ onMounted(async () => {
 </script>
 
 <template>
-  <view class="menu-page">
-    <view class="header">
-      <view class="store-info">
-        <text class="store-name">海棠文化广场店</text>
-        <text class="store-distance">约 12m</text>
+  <view class="h-screen flex flex-col bg-page pb-150rpx">
+    <view class="bg-white px-24rpx pt-20rpx pb-16rpx">
+      <view class="mb-14rpx flex items-center">
+        <text class="mr-12rpx text-30rpx text-gray-800 font-700">海棠文化广场店</text>
+        <text class="text-24rpx text-gray-500">约 12m</text>
       </view>
-      <view class="header-tools">
-        <view class="search-box">
+      <view class="flex gap-12rpx">
+        <view class="h-68rpx flex-1 rounded-full bg-gray-100 px-20rpx text-24rpx text-gray-400 leading-68rpx">
           🔍 中国茶咖
         </view>
-        <view class="filter-btn">
+        <view class="h-68rpx w-108rpx rounded-full bg-gray-100 text-center text-24rpx text-gray-700 leading-68rpx">
           筛选
         </view>
       </view>
     </view>
 
-    <view class="content">
-      <scroll-view class="category-pane" scroll-y>
+    <view class="flex flex-1 overflow-hidden">
+      <scroll-view class="w-180rpx bg-sidebar" scroll-y>
         <view
           v-for="item in categories"
           :key="item.categoryId"
-          class="category-item"
-          :class="{ active: item.categoryId === activeCategoryId }"
+          class="border-l-6rpx border-l-transparent px-12rpx py-24rpx text-center text-24rpx text-gray-500"
+          :class="item.categoryId === activeCategoryId ? 'bg-white border-l-blue-600 text-gray-900 font-600' : ''"
           @click="changeCategory(item.categoryId)"
         >
           {{ item.categoryName }}
         </view>
       </scroll-view>
 
-      <scroll-view class="product-pane" scroll-y>
-        <view v-if="loading" class="loading">
+      <scroll-view class="flex-1 px-16rpx py-18rpx" scroll-y>
+        <view v-if="loading" class="p-20rpx text-24rpx text-gray-500">
           加载中...
         </view>
         <view v-else>
           <view
             v-for="item in products"
             :key="item.spuId"
-            class="product-card"
+            class="mb-16rpx flex rounded-16rpx bg-white p-18rpx"
             @click="openSpec(item.spuId)"
           >
-            <view class="product-cover" />
-            <view class="product-main">
-              <view class="product-title">
+            <view class="mr-16rpx h-132rpx w-132rpx rounded-full bg-gradient-to-br from-amber-200 to-red-300" />
+            <view class="flex-1">
+              <view class="mb-8rpx text-30rpx text-gray-900 font-700">
                 {{ item.title }}
               </view>
-              <view class="product-subtitle">
+              <view class="mb-12rpx text-22rpx text-gray-500">
                 {{ item.subTitle || '精选风味' }}
               </view>
-              <view class="product-footer">
-                <text class="price">¥{{ item.basePrice }}</text>
-                <view class="add-btn" @click.stop="quickAdd(item)">
+              <view class="flex items-center justify-between">
+                <text class="text-32rpx text-red-500 font-700">¥{{ item.basePrice }}</text>
+                <view class="h-52rpx w-52rpx rounded-full bg-blue-600 text-center text-36rpx text-white leading-52rpx" @click.stop="quickAdd(item)">
                   +
                 </view>
               </view>
@@ -283,39 +281,42 @@ onMounted(async () => {
       </scroll-view>
     </view>
 
-    <view class="cart-bar" @click="goCartPage">
-      <view class="cart-left">
-        <text class="cart-count">购物车 {{ cartTotalCount }} 件</text>
-        <text class="cart-amount">合计 ¥{{ cartTotalAmount }}</text>
+    <view
+      class="fixed bottom-20rpx left-24rpx right-24rpx flex items-center justify-between rounded-full bg-gray-900 px-22rpx py-18rpx text-white"
+      @click="goCartPage"
+    >
+      <view class="flex flex-col">
+        <text class="text-24rpx">购物车 {{ cartTotalCount }} 件</text>
+        <text class="text-28rpx font-700">合计 ¥{{ cartTotalAmount }}</text>
       </view>
-      <view class="cart-action">
+      <view class="rounded-full bg-blue-600 px-24rpx py-12rpx text-24rpx">
         去结算
       </view>
     </view>
 
-    <view v-if="showSpec" class="spec-mask" @click="showSpec = false">
-      <view class="spec-panel" @click.stop>
-        <view v-if="detailLoading" class="loading">
+    <view v-if="showSpec" class="fixed inset-0 flex items-end bg-black bg-opacity-45" @click="showSpec = false">
+      <view class="max-h-75vh w-full overflow-y-auto rounded-t-24rpx bg-white px-24rpx pb-32rpx pt-28rpx" @click.stop>
+        <view v-if="detailLoading" class="p-20rpx text-24rpx text-gray-500">
           加载规格中...
         </view>
         <view v-else-if="currentDetail">
-          <view class="spec-title">
+          <view class="mb-8rpx text-34rpx font-700">
             {{ currentDetail.title }}
           </view>
-          <view class="spec-subtitle">
+          <view class="mb-20rpx text-24rpx text-gray-500">
             {{ currentDetail.subTitle || '请按喜好选择规格与口味' }}
           </view>
 
-          <view class="group">
-            <view class="group-title">
+          <view class="mb-20rpx">
+            <view class="mb-10rpx text-26rpx font-600">
               规格
             </view>
-            <view class="chips">
+            <view class="flex flex-wrap gap-12rpx">
               <view
                 v-for="sku in currentDetail.skuList"
                 :key="sku.skuId"
-                class="chip"
-                :class="{ active: sku.skuId === selectedSkuId }"
+                class="rounded-full bg-gray-100 px-16rpx py-10rpx text-22rpx text-gray-700"
+                :class="sku.skuId === selectedSkuId ? 'bg-blue-100 text-blue-700' : ''"
                 @click="selectedSkuId = sku.skuId"
               >
                 {{ sku.skuName }}<text v-if="sku.priceDelta > 0"> +{{ sku.priceDelta }}</text>
@@ -323,20 +324,16 @@ onMounted(async () => {
             </view>
           </view>
 
-          <view
-            v-for="group in currentDetail.attributeGroups"
-            :key="group.groupId"
-            class="group"
-          >
-            <view class="group-title">
+          <view v-for="group in currentDetail.attributeGroups" :key="group.groupId" class="mb-20rpx">
+            <view class="mb-10rpx text-26rpx font-600">
               {{ group.groupName }}
             </view>
-            <view class="chips">
+            <view class="flex flex-wrap gap-12rpx">
               <view
                 v-for="item in group.items"
                 :key="item.itemId"
-                class="chip"
-                :class="{ active: selectedAttributes[group.groupId] === item.itemId }"
+                class="rounded-full bg-gray-100 px-16rpx py-10rpx text-22rpx text-gray-700"
+                :class="selectedAttributes[group.groupId] === item.itemId ? 'bg-blue-100 text-blue-700' : ''"
                 @click="setAttribute(group.groupId, item.itemId)"
               >
                 {{ item.itemName }}<text v-if="item.priceDelta > 0"> +{{ item.priceDelta }}</text>
@@ -344,16 +341,16 @@ onMounted(async () => {
             </view>
           </view>
 
-          <view v-if="currentDetail.availableToppings.length" class="group">
-            <view class="group-title">
+          <view v-if="currentDetail.availableToppings.length" class="mb-20rpx">
+            <view class="mb-10rpx text-26rpx font-600">
               小料（可选）
             </view>
-            <view class="chips">
+            <view class="flex flex-wrap gap-12rpx">
               <view
                 v-for="item in currentDetail.availableToppings"
                 :key="item.toppingId"
-                class="chip"
-                :class="{ active: selectedToppingIds.includes(item.toppingId) }"
+                class="rounded-full bg-gray-100 px-16rpx py-10rpx text-22rpx text-gray-700"
+                :class="selectedToppingIds.includes(item.toppingId) ? 'bg-blue-100 text-blue-700' : ''"
                 @click="toggleTopping(item.toppingId)"
               >
                 {{ item.name }}<text v-if="item.priceDelta > 0"> +{{ item.priceDelta }}</text>
@@ -361,17 +358,17 @@ onMounted(async () => {
             </view>
           </view>
 
-          <view class="spec-footer">
-            <view class="counter">
-              <view class="step-btn" @click="decreaseCount">
+          <view class="mt-10rpx flex items-center justify-between">
+            <view class="flex items-center">
+              <view class="h-52rpx w-52rpx rounded-full bg-gray-100 text-center text-32rpx leading-52rpx" @click="decreaseCount">
                 -
               </view>
-              <text class="count">{{ quantity }}</text>
-              <view class="step-btn" @click="increaseCount">
+              <text class="w-64rpx text-center text-26rpx">{{ quantity }}</text>
+              <view class="h-52rpx w-52rpx rounded-full bg-gray-100 text-center text-32rpx leading-52rpx" @click="increaseCount">
                 +
               </view>
             </view>
-            <view class="confirm-btn" @click="addCurrentToCart">
+            <view class="rounded-full bg-blue-600 px-28rpx py-16rpx text-24rpx text-white" @click="addCurrentToCart">
               加入购物车 ¥{{ totalPrice }}
             </view>
           </view>
@@ -380,282 +377,3 @@ onMounted(async () => {
     </view>
   </view>
 </template>
-
-<style scoped lang="scss">
-.menu-page {
-  min-height: 100vh;
-  padding-bottom: 150rpx;
-  background: #f6f7fb;
-}
-
-.header {
-  padding: 20rpx 24rpx 16rpx;
-  background: #fff;
-}
-
-.store-info {
-  display: flex;
-  align-items: center;
-  margin-bottom: 14rpx;
-}
-
-.store-name {
-  margin-right: 12rpx;
-  font-size: 30rpx;
-  font-weight: 700;
-  color: #1f2937;
-}
-
-.store-distance {
-  font-size: 24rpx;
-  color: #6b7280;
-}
-
-.header-tools {
-  display: flex;
-  gap: 12rpx;
-}
-
-.search-box {
-  flex: 1;
-  height: 68rpx;
-  padding: 0 20rpx;
-  line-height: 68rpx;
-  border-radius: 999rpx;
-  background: #f3f4f6;
-  color: #9ca3af;
-  font-size: 24rpx;
-}
-
-.filter-btn {
-  width: 108rpx;
-  height: 68rpx;
-  line-height: 68rpx;
-  border-radius: 999rpx;
-  text-align: center;
-  background: #f3f4f6;
-  color: #374151;
-  font-size: 24rpx;
-}
-
-.content {
-  display: flex;
-  height: calc(100vh - 290rpx);
-}
-
-.category-pane {
-  width: 180rpx;
-  background: #f0f2f6;
-}
-
-.category-item {
-  padding: 24rpx 12rpx;
-  text-align: center;
-  font-size: 24rpx;
-  color: #6b7280;
-  border-left: 6rpx solid transparent;
-}
-
-.category-item.active {
-  color: #111827;
-  font-weight: 600;
-  background: #fff;
-  border-left-color: #2563eb;
-}
-
-.product-pane {
-  flex: 1;
-  padding: 18rpx 16rpx;
-}
-
-.product-card {
-  display: flex;
-  margin-bottom: 16rpx;
-  padding: 18rpx;
-  border-radius: 16rpx;
-  background: #fff;
-}
-
-.product-cover {
-  width: 132rpx;
-  height: 132rpx;
-  margin-right: 16rpx;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #fde68a, #fca5a5);
-}
-
-.product-main {
-  flex: 1;
-}
-
-.product-title {
-  margin-bottom: 8rpx;
-  font-size: 30rpx;
-  font-weight: 700;
-  color: #111827;
-}
-
-.product-subtitle {
-  margin-bottom: 12rpx;
-  font-size: 22rpx;
-  color: #6b7280;
-}
-
-.product-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.price {
-  font-size: 32rpx;
-  color: #ef4444;
-  font-weight: 700;
-}
-
-.add-btn {
-  width: 52rpx;
-  height: 52rpx;
-  line-height: 52rpx;
-  text-align: center;
-  border-radius: 50%;
-  color: #fff;
-  font-size: 36rpx;
-  background: #2563eb;
-}
-
-.cart-bar {
-  position: fixed;
-  left: 24rpx;
-  right: 24rpx;
-  bottom: 20rpx;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18rpx 22rpx;
-  border-radius: 999rpx;
-  background: #111827;
-  color: #fff;
-}
-
-.cart-left {
-  display: flex;
-  flex-direction: column;
-}
-
-.cart-count {
-  font-size: 24rpx;
-}
-
-.cart-amount {
-  font-size: 28rpx;
-  font-weight: 700;
-}
-
-.cart-action {
-  padding: 12rpx 24rpx;
-  border-radius: 999rpx;
-  background: #2563eb;
-  font-size: 24rpx;
-}
-
-.spec-mask {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: flex-end;
-  background: rgb(17 24 39 / 45%);
-}
-
-.spec-panel {
-  width: 100%;
-  max-height: 75vh;
-  overflow-y: auto;
-  padding: 28rpx 24rpx 32rpx;
-  border-radius: 24rpx 24rpx 0 0;
-  background: #fff;
-}
-
-.spec-title {
-  margin-bottom: 8rpx;
-  font-size: 34rpx;
-  font-weight: 700;
-}
-
-.spec-subtitle {
-  margin-bottom: 20rpx;
-  font-size: 24rpx;
-  color: #6b7280;
-}
-
-.group {
-  margin-bottom: 20rpx;
-}
-
-.group-title {
-  margin-bottom: 10rpx;
-  font-size: 26rpx;
-  font-weight: 600;
-}
-
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12rpx;
-}
-
-.chip {
-  padding: 10rpx 16rpx;
-  border-radius: 999rpx;
-  font-size: 22rpx;
-  color: #374151;
-  background: #f3f4f6;
-}
-
-.chip.active {
-  color: #1d4ed8;
-  background: #dbeafe;
-}
-
-.spec-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 10rpx;
-}
-
-.counter {
-  display: flex;
-  align-items: center;
-}
-
-.step-btn {
-  width: 52rpx;
-  height: 52rpx;
-  line-height: 52rpx;
-  text-align: center;
-  border-radius: 50%;
-  background: #f3f4f6;
-  font-size: 32rpx;
-}
-
-.count {
-  width: 64rpx;
-  text-align: center;
-  font-size: 26rpx;
-}
-
-.confirm-btn {
-  padding: 16rpx 28rpx;
-  border-radius: 999rpx;
-  color: #fff;
-  font-size: 24rpx;
-  background: #2563eb;
-}
-
-.loading {
-  padding: 20rpx;
-  color: #6b7280;
-  font-size: 24rpx;
-}
-</style>

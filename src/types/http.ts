@@ -1,8 +1,8 @@
 export type {
+  ApiContract,
   ApiRequestOptions,
   ApiResult,
-  ApiTuple,
-  ApiTypeDeclaration,
+  ApiTypeInput,
   HttpResponse,
   RequestOptions,
 } from '@/api/core/types'

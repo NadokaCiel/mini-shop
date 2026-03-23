@@ -3,7 +3,7 @@
 ## 目录分层
 
 - `core/`
-  - `types.ts`：统一类型（`ApiTuple`、`ApiResult`、`ApiTypeDeclaration`）
+  - `types.ts`：统一类型（`ApiResult`、`ApiContract`）
   - `contract.ts`：接口契约声明器 `defineApiType`
   - `http-client.ts`：基于 `uni.request` 的请求客户端（token、重试、错误码、命名转换）
 - `modules/<domain>/`
@@ -16,13 +16,11 @@
 
 ## 调用约定
 
-统一返回元组：
+统一返回：
 
-`Promise<[result, typeDeclaration]>`
+`Promise<ApiResult<T>>`
 
-- `result`：`ApiResult<T>`
-  - `isOk`、`msg`、`getMsg()`、`getData()`
-- `typeDeclaration`：当前接口契约（name/path/schema）
+- `result`：`ApiResult<T>`（`isOk`、`msg`、`getMsg()`、`getData()`）
 
 ## 命名风格转换
 
@@ -34,7 +32,7 @@
 ## 示例
 
 ```ts
-const [result, typeDeclaration] = await getActivityHttp().queryActivityHome({
+const result = await getActivityHttp().queryActivityHome({
   activitySn: 'ACT_20260320',
 })
 
@@ -43,5 +41,5 @@ if (!result.isOk) {
   return
 }
 
-console.log(result.getData(), typeDeclaration.path)
+console.log(result.getData())
 ```

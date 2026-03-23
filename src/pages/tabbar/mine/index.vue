@@ -10,7 +10,7 @@ const authStore = useAuthStore()
 const nickname = computed(() => authStore.profile?.nickname || '未登录用户')
 
 async function handleLogout() {
-  const [result] = await authApi.logout()
+  const result = await authApi.logout()
   if (!result.isOk) {
     uni.showToast({
       title: result.getMsg(),
@@ -23,11 +23,11 @@ async function handleLogout() {
 </script>
 
 <template>
-  <view class="page">
-    <view class="title">
+  <view class="min-h-100vh px-32rpx py-32rpx">
+    <view class="mb-20rpx text-36rpx font-600">
       个人中心
     </view>
-    <view class="desc">
+    <view class="mb-24rpx">
       当前用户：{{ nickname }}
     </view>
     <button type="warn" @click="handleLogout">
@@ -35,20 +35,3 @@ async function handleLogout() {
     </button>
   </view>
 </template>
-
-<style scoped lang="scss">
-.page {
-  min-height: 100vh;
-  padding: 32rpx;
-}
-
-.title {
-  margin-bottom: 20rpx;
-  font-size: 36rpx;
-  font-weight: 600;
-}
-
-.desc {
-  margin-bottom: 24rpx;
-}
-</style>

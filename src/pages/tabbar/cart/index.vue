@@ -9,11 +9,11 @@ function goOrderList() {
 </script>
 
 <template>
-  <view class="page">
-    <view class="title">
+  <view class="min-h-100vh px-32rpx py-32rpx">
+    <view class="mb-20rpx text-36rpx font-600">
       购物车
     </view>
-    <view class="desc">
+    <view class="mb-24rpx text-gray-500">
       此页已设置 requiresAuth，未登录会被路由守卫拦截。
     </view>
     <button type="primary" @click="goOrderList">
@@ -21,21 +21,3 @@ function goOrderList() {
     </button>
   </view>
 </template>
-
-<style scoped lang="scss">
-.page {
-  min-height: 100vh;
-  padding: 32rpx;
-}
-
-.title {
-  margin-bottom: 20rpx;
-  font-size: 36rpx;
-  font-weight: 600;
-}
-
-.desc {
-  margin-bottom: 24rpx;
-  color: #6b7280;
-}
-</style>

@@ -1,4 +1,4 @@
-import type { ApiResult, ApiTuple, ApiTypeDeclaration, HttpResponse, RequestOptions } from './types'
+import type { ApiContract, ApiResult, HttpResponse, RequestOptions } from './types'
 import { runtimeConfig } from '@/config/env'
 import { DEFAULT_ERROR_MESSAGE, HTTP_CODE } from '@/constants/http'
 import { resolveMockResponse } from '@/mock/http-mock'
@@ -151,44 +151,44 @@ function runRequest<T>(options: RequestOptions<unknown>, retryCount: number): Pr
 }
 
 export async function request<TRequest, TResponse>(
-  typeDeclaration: ApiTypeDeclaration<TRequest, TResponse>,
+  _contract: ApiContract<TRequest, TResponse>,
   options: RequestOptions<TRequest>,
-): Promise<ApiTuple<TRequest, TResponse>> {
+): Promise<ApiResult<TResponse>> {
   const finalOptions = applyRequestInterceptors(options)
   try {
     const response = await runRequest<TResponse>(finalOptions, finalOptions.retry ?? 0)
     const parsedResponse = applyResponseInterceptors(response, finalOptions)
     const data = camelizeKeysDeep(parsedResponse.data)
     if (parsedResponse.code !== HTTP_CODE.success) {
-      return [createApiResult<TResponse>(false, parsedResponse.code, parsedResponse.message, null), typeDeclaration]
+      return createApiResult<TResponse>(false, parsedResponse.code, parsedResponse.message, null)
     }
-    return [createApiResult<TResponse>(true, parsedResponse.code, parsedResponse.message, data), typeDeclaration]
+    return createApiResult<TResponse>(true, parsedResponse.code, parsedResponse.message, data)
   }
   catch (error) {
     const message = error instanceof Error ? error.message : DEFAULT_ERROR_MESSAGE
-    return [createApiResult<TResponse>(false, -1, message, null), typeDeclaration]
+    return createApiResult<TResponse>(false, -1, message, null)
   }
 }
 
 export function get<TRequest, TResponse>(
-  typeDeclaration: ApiTypeDeclaration<TRequest, TResponse>,
+  contract: ApiContract<TRequest, TResponse>,
   options: Omit<RequestOptions<TRequest>, 'url' | 'method'> = {},
-): Promise<ApiTuple<TRequest, TResponse>> {
-  return request(typeDeclaration, {
+): Promise<ApiResult<TResponse>> {
+  return request(contract, {
     ...options,
-    url: typeDeclaration.path,
+    url: contract.path,
     method: 'GET',
   })
 }
 
 export function post<TRequest, TResponse>(
-  typeDeclaration: ApiTypeDeclaration<TRequest, TResponse>,
+  contract: ApiContract<TRequest, TResponse>,
   data?: TRequest,
   options: Omit<RequestOptions<TRequest>, 'url' | 'method' | 'data'> = {},
-): Promise<ApiTuple<TRequest, TResponse>> {
-  return request(typeDeclaration, {
+): Promise<ApiResult<TResponse>> {
+  return request(contract, {
     ...options,
-    url: typeDeclaration.path,
+    url: contract.path,
     data,
     method: 'POST',
   })

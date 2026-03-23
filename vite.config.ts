@@ -1,6 +1,7 @@
 import { fileURLToPath, URL } from 'node:url'
 
 import uni from '@dcloudio/vite-plugin-uni'
+import Unocss from '@unocss/vite'
 import { defineConfig } from 'vite'
 
 const uniPlugin = (uni as unknown as { default?: typeof uni }).default || uni
@@ -11,5 +12,5 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
-  plugins: [uniPlugin()],
+  plugins: [uniPlugin(), Unocss()],
 })
